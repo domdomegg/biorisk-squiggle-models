@@ -4,23 +4,23 @@ estimateBioterrorism(
   increaseInHumanBioscienceResearchRatio,
   returnType
 ) = {
-  // Office for National Statistics. "United Kingdom population mid-year estimate"
-  // https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/timeseries/ukpop/pop
-  // Population stats for 2012-2023
-  ukPopulation = 59113000 to 67603500
-  
-  // Home Office. "Operation of police powers under the Terrorism Act 2000 and subsequent legislation: Arrests, outcomes, and stop and search, Great Britain, quarterly update to December 2023"
-  // https://www.gov.uk/government/statistics/operation-of-police-powers-under-tact-2000-to-december-2023/
-  // 200 to 400 terrorism arrests per year in England, Wales and Scotland in 2002-2023:
-  percentageRadicalized = (200 to 400) / ukPopulation
-  
-  // https://en.wikipedia.org/wiki/List_of_terrorist_incidents_in_Great_Britain
-  // 103 successful terror attacks from 1970-2024
-  percentageRadicalizedWhoGoOnToSuccessfulAttack = increaseInRadicalisationRatio * (103) / (2024 - 1970) / ukPopulation
-  // 5 attacks from 1970-2024 that killed >20 people since 1980
-  // NB: In that period there hasn't been an attack that tried to cause >10000 deaths
-  percentageRadicalizedWhoGoOnToLargeSuccessfulAttack = increaseInRadicalisationRatio * 5 / (2024 - 1970) / ukPopulation
-  
+  // United Nations, Department of Economic and Social Affairs. "2024 Revision of World Population Prospects"
+  // https://population.un.org/wpp/
+  // Total population estimate, as of 1 July (IndicatorId = 49)
+  // Mean taken from 1970 to 2020
+  avgWorldPopulation1970to2020 = 5752441470
+
+  // National Consortium for the Study of Terrorism and Responses to Terrorism. "The Global Terrorism Database"
+  // https://www.start.umd.edu/gtd/
+  // By successful, we mean attacks with >10 fatalities.
+  // Between 1970 and 2020 (dates for which data is available), there were attacks with:
+  //   11-50 fatalities: 427
+  //   51-100 fatalities: 30
+  //   100+ fatalities: 11
+  successfulTerroristAttacks1970to2020 = 427 + 30 + 11
+
+  successfulTerroristAttacksPerCapitaPerYear = increaseInRadicalisationRatio * successfulTerroristAttacks1970to2020 / avgWorldPopulation1970to2020 / (2020 - 1970)
+
   // BSL-3 are probably relevant
   // Jocelyn Kaiser. "Taking Stock of the Biodefense Boom"
   // https://www.science.org/doi/10.1126/science.333.6047.1214
@@ -34,19 +34,21 @@ estimateBioterrorism(
   // There is also likely underreporting to the CDC, as there are unregistered labs. A factor of 1 to 1.2 is used to account for this.
   numberOfRelevantLabs = 1495 * 3 * (1.5 to 2) * (1 to 1.2)
   
-  // This is a rough estimate based on speaking to people who have worked at biosciences labs
-  staffPerLab = (10 to 50) * increaseInHumanBioscienceResearchRatio
+  // Estimated based on speaking with people who work or have worked at biosciences labs
+  staffPerLab = (5 to 25) * increaseInHumanBioscienceResearchRatio
   
   // An alternate route to modelling this would be the number of people working on particular areas. In 2004-2010 10,000 people were estimated to have access to select agents: https://journals.asm.org/doi/10.1128/mbio.02560-14
   // In 2022, a source said 30k: https://dam.gcsp.ch/files/doc/gcsp-geneva-paper-29-22
-  staffWorkingOnThis = staffPerLab * numberOfRelevantLabs
+  staffWithLabAccess = staffPerLab * numberOfRelevantLabs
   
   // Gryphon Scientific. "Risk and Benefit Analysis of Gain of Function Research"
   // https://gryphonsci.wpengine.com/wp-content/uploads/2018/12/Risk-and-Benefit-Analysis-of-Gain-of-Function-Research-Final-Report-1.pdf
   // "the main plausible threat [...] involves malicious insiders [...] Their motivations range from emotional disturbances to ideological radicalization by domestic and transnational terrorist organizations"
   // 
-  // This assumes people at BSL-3 labs have the same radicalisation rate as the general public. However in practice this is likely to be lower given most will be highly-educated employed people.
-  insiderOutbreaksPerYear = numberOfRelevantLabs * (1 - ((1 - percentageRadicalizedWhoGoOnToLargeSuccessfulAttack) ^ staffPerLab))
+  // We add an estimated factor of (0.6 to 1) to account for the fact that people at BSL-3 labs:
+  // - are less likely to conduct a terrorist attack than the general public, as most staff will be highly-educated employed people. This demographic is less likely to be involved in terrorism.
+  // - may choose to conduct an non-bio terror attack
+  insiderOutbreaksPerYear = (0.6 to 1) * staffWithLabAccess * successfulTerroristAttacksPerCapitaPerYear
   
   // OECD. "OECD Indicators: Education at a Glance"
   // https://www.oecd-ilibrary.org/education/education-at-a-glance-2023_e13bef63-en
@@ -55,13 +57,18 @@ estimateBioterrorism(
   // Assumes PhDs exist at the same rate in the working population for PhD grads. This is likely an overestimate, although we're underestimating the total PhDs by only considering OECD countries above.
   peopleWithBiologyPhd = 543k * (65 - 30) / 9
   
-  // This is a rough estimate based on speaking to people who have worked at biosciences labs
-  // It also considers the ease of getting involved with DIY biology, and the lax security of many labs
+  // Estimated based on speaking with people who work or have worked at biosciences labs
+  // These people differed in opinion, resulting in the wide range below.
+  // Several cited the ease of getting involved with DIY biology, and the weak physical security of many labs.
+  // Others thought DIY biology risks were overblown, and that even the weak physical security would require a lot of insider 'know-how' to bypass.
   percentageOutsideLabWhoCanGetMaterials = (1% to 25%)
 
   peopleWithSkillsAndResourcesToBuildSyntheticPathogen = peopleWithBiologyPhd * percentageOutsideLabWhoCanGetMaterials * increaseInSkillsRatio
   
-  outsiderOutbreaksPerYear = peopleWithSkillsAndResourcesToBuildSyntheticPathogen * percentageRadicalizedWhoGoOnToLargeSuccessfulAttack
+  // We add an estimated factor of (0.8 to 1) to account for the fact that people with skills and resources:
+  // - are less likely to conduct a terrorist attack than the general public, as most will be highly-educated people. This demographic is less likely to be involved in terrorism.
+  // - may choose to conduct an non-bio terror attack
+  outsiderOutbreaksPerYear = (0.8 to 1) * peopleWithSkillsAndResourcesToBuildSyntheticPathogen * successfulTerroristAttacksPerCapitaPerYear
   
   outbreaksPerYear = insiderOutbreaksPerYear + outsiderOutbreaksPerYear
   
@@ -79,13 +86,17 @@ estimateBioterrorism(
   // COVID's cumulative percentage infected globally was 43.9%
   seriousPandemicPercentageInfected = 20% to 60%
   
-  worldPopulation = 8B
+  // United Nations, Department of Economic and Social Affairs. "2024 Revision of World Population Prospects"
+  // https://population.un.org/wpp/
+  // Total population estimate, as of 1 July 2024 (IndicatorId = 49)
+  worldPopulation = 8161972573
+
   deathsPerSeriousPandemic = worldPopulation * seriousPandemicFatalityRate * seriousPandemicPercentageInfected
   
   // Uncertain how likely a few onward infections are to cause a serious pandemic. There is relatively little data available here.
   // These numbers are fairly rough estimates, based on speaking to some people familiar with infectious diseases.
-  // Rates are x10 compared to accidental release, because an intentional actor is more likely to help boost spread and reduce response ability
-  pandemicGivenCommunityOutbreak = (0.1% to 5%) * 10
+  // Rates are higher than accidental release, because an intentional actor is more likely to help boost spread and reduce response ability
+  pandemicGivenCommunityOutbreak = 1% to 25%
   
   pandemicsPerYear = outbreaksPerYear * pandemicGivenCommunityOutbreak
   deathsPerYear = pandemicsPerYear * deathsPerSeriousPandemic
@@ -123,7 +134,7 @@ Calculator.make(
     inputs: [
       Input.text({
         name: "Radicalisation ratio",
-        default: "10",
+        default: "2 to 10",
         description: "How much more terrorist radicalisation do you expect from transformative AI? This might increase because of increased mis/disinformation, greater manipulative AI powers, and disillusionment e.g. because of job loss. It might decrease because AI tools are able to better counter mis/disinformation, or deradicalise people. 10 = 10 times as much as today."
       }),
       Input.text({
@@ -147,6 +158,6 @@ Calculator.make(
         ]
       })
     ],
-    sampleCount: 10k,
+    sampleCount: 100k,
   }
 )

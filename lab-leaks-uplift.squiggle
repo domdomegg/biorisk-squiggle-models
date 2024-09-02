@@ -70,7 +70,11 @@ estimateLabLeaks(
   // COVID's cumulative percentage infected globally was 43.9%
   seriousPandemicPercentageInfected = 20% to 60%
   
-  worldPopulation = 8B
+  // United Nations, Department of Economic and Social Affairs. "2024 Revision of World Population Prospects"
+  // https://population.un.org/wpp/
+  // Total population estimate, as of 1 July 2024 (IndicatorId = 49)
+  worldPopulation = 8161972573
+
   deathsPerSeriousPandemic = worldPopulation * seriousPandemicFatalityRate * seriousPandemicPercentageInfected
   
   // Uncertain how likely a few onward infections are to cause a serious pandemic. There is relatively little data available here.
@@ -131,6 +135,6 @@ Calculator.make(
         ]
       })
     ],
-    sampleCount: 10k,
+    sampleCount: 100k,
   }
 )
