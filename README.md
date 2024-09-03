@@ -1,12 +1,12 @@
-# Quantitive models of AI-driven bioterrorism and lab leak biorisk
+# Quantitative models of AI-driven bioterrorism and lab leak biorisk
 
-This repository contains supplementary code for the paper _Quantitive models of AI-driven bioterrorism and lab leak biorisk_.
+This repository contains supplementary code for the paper _Quantitative models of AI-driven bioterrorism and lab leak biorisk_.
 
 It contains the code for two models:
 - [bioterrorism-uplift.squiggle](./bioterrorism-uplift.squiggle)
 - [lab-leaks-uplift.squiggle](./lab-leaks-uplift.squiggle)
 
-Each model aims to give a quantitive estimate for the number of pandemics per year from the different sources, before and after the impact of transformative AI.
+Each model aims to give a quantitative estimate for the number of pandemics per year from the different sources, before and after the impact of transformative AI.
 
 Further details about the models are given in the paper, and via inline comments in the code.
 
