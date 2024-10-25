@@ -1,0 +1,29 @@
+// Variables
+// See paper for definitions
+n = 7850 to 10130
+l = beta(2.42, 267)
+i = beta(3.54, 42.4)
+s = 5 to 25
+t = 1.63 * 10^-9
+t_prime = 0.5 to 1
+o = 2.11 * 10^6
+a = beta(1.33, 12.4)
+p_l = beta(1.05, 60.2)
+p_t = beta(1.33, 12.4)
+ai_v = 10
+ai_l = 0.25 to 1.5
+ai_s = 0.5 to 2
+ai_t = 2 to 10
+ai_o = 10 to 100
+
+// Bioterrorism
+bioterrorismPandemicsPerYear = (n * s + o * a) * t * t_prime * p_t
+
+// GPRTAI bioterrorism
+gprtaiBioterrorismPandemicsPerYear = (n * s * ai_s + o * ai_o * a) * t * t_prime * ai_t * p_t
+
+// Lab leaks
+labLeaksPandemicsPerYear = n * l * i * p_l
+
+// GPRTAI lab leaks
+gprtaiLabLeaksPandemicsPerYear = n * ai_v * l * ai_l * i * p_l

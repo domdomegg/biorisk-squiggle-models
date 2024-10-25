@@ -1,0 +1,28 @@
+// Some (very rough) estimates for converting between serious pandemic and number of deaths
+
+// INPUT
+pandemicsPerYear = 0.002 to 0.3
+
+// Edouard Mathieu et al. "Mortality Risk of COVID-19"
+// https://ourworldindata.org/mortality-risk-covid#case-fatality-rate-of-other-diseases
+// Case fatality rates:
+// - SARS-CoV: 10%
+// - MERS-CoV: 34%
+// - Flu: 0.1% to 0.2%
+// - Ebola: 40% to 50%
+seriousPandemicFatalityRate = 5% to 30%
+
+// COVID-19 Cumulative Infection Collaborators. "Estimating global, regional, and national daily and cumulative infections with SARS-CoV-2 through Nov 14, 2021"
+// https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(22)00484-6/fulltext
+// COVID's cumulative percentage infected globally was 43.9%
+seriousPandemicPercentageInfected = 20% to 60%
+
+// United Nations, Department of Economic and Social Affairs. "2024 Revision of World Population Prospects"
+// https://population.un.org/wpp/
+// Total population estimate, as of 1 July 2024 (IndicatorId = 49)
+worldPopulation = 8161972573
+
+deathsPerSeriousPandemic = worldPopulation * seriousPandemicFatalityRate * seriousPandemicPercentageInfected
+
+// OUTPUT
+deathsPerYear = pandemicsPerYear * deathsPerSeriousPandemic
