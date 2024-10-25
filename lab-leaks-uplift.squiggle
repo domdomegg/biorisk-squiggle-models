@@ -19,15 +19,15 @@ estimateLabLeaks(
   // Annualised this is (1-(1-0.7)^(1/50)) = 2.4% 
   //
   // These also might be underestimates because the US has higher biosafety standards than many other countries, this looks at regulated labs, and there may be incentives to underreport leaks.
-  // I used: 0.2% to 2%
-  // Given this is an uncertainty about a small probability, I then fit this to a beta distribution using https://nunosempere.com/blog/2023/03/15/fit-beta/
+  // We used: 0.2% to 2%
+  // Given this is an uncertainty about a probability, we then fit this to a beta distribution using https://nunosempere.com/blog/2023/03/15/fit-beta/
   leaksPerLabYear = beta(2.421041164720439, 267.2057167938946) * bioscienceLeaksRatio
   
   // Ron A. M. Fouchier. "Studies on Influenza Virus Transmission between Ferrets: the Public Health Risks Revisited"
   // https://journals.asm.org/doi/10.1128/mbio.02560-14
   // "Previous studies used 5 to 60% as the probability of onward transmission, which is based on the unlimited spread of a pandemic influenza virus in the general population". However, "scientifically justified reduction [...] can be made, based on the above-mentioned biosafety measures and risk mitigation strategies that are in place"
   // - Vaccination and treatment could reduce onwards transmission. Fouchier suggests this is by >65% for influenza, however this assumes the best vaccine type and refers to vaccine efficacy and not onwards transmission data. Other sources suggest 40-60% for other pathogens. For example, for COVID it seems to be ~40%: https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8569927/
-  // - Quarantine measures. I believe this paper overestimates this by assuming that all people immediately know when they're infected and quarantine perfectly. I do think people will likely be better than the general public at recognising symptoms and quarantining, but it's unclear by how much. I have approximated by this as being twice as good as the average person's measures to prevent onward transmission.
+  // - Quarantine measures. We believe this paper overestimates this by assuming that all people immediately know when they're infected and quarantine perfectly. We think people will likely be better than the general public at recognising symptoms and quarantining, but it's unclear by how much. We have approximated by this as being twice as good as the average person's measures to prevent onward transmission.
   // 
   // Lynn C. Klotz and Edward J. Sylvester. "The Consequences of a Lab Escape of a Potential Pandemic Pathogen"
   // https://www.frontiersin.org/journals/public-health/articles/10.3389/fpubh.2014.00116/full
@@ -37,8 +37,8 @@ estimateLabLeaks(
   // https://link.springer.com/article/10.1186/1741-7015-11-252
   // 25-80% probability to trigger an outbreak, assuming no interventions
   // 
-  // I used: (5% to 60%) * (40% to 60%) * (50%) ≈ 2.5% to 15%
-  // Given this is an uncertainty about a small probability, I then fit this to a beta distribution using https://nunosempere.com/blog/2023/03/15/fit-beta/
+  // We used: (5% to 60%) * (40% to 60%) * (50%) ≈ 2.5% to 15%
+  // Given this is an uncertainty about a small probability, we then fit this to a beta distribution using https://nunosempere.com/blog/2023/03/15/fit-beta/
   onwardInfectionLikelihood = beta(3.5382505870469236, 42.38001810283147)
   
   // BSL-3 are probably relevant
@@ -49,10 +49,8 @@ estimateLabLeaks(
   // Filippa Lentzos et al. "Global BioLabs Report 2023"
   // https://www.kcl.ac.uk/warstudies/assets/global-biolabs-report-2023.pdf
   // Approximately 1/3 of BSL-3+ labs are in the US
-  // There's also been about a 2x growth in BSL4 labs since 2011, when the 1495 figure is from. Possibly the same in BSL3 (1.5 to 2)
-  // 
-  // There is also likely underreporting to the CDC, as there are unregistered labs. A factor of 1 to 1.2 is used to account for this.
-  numberOfRelevantLabs = 1495 * 3 * (1.5 to 2) * (1 to 1.2) * bioscienceResearchQuantityRatio
+  // There's also been about a 2x growth in BSL4 labs since 2011, when the 1495 figure is from. We expect this to be roughly the same in BSL3 (1.75 to 2.25)
+  numberOfRelevantLabs = 1495 * 3 * (1.75 to 2.25) * bioscienceResearchQuantityRatio
   
   onwardInfectionsPerYear = numberOfRelevantLabs * leaksPerLabYear * onwardInfectionLikelihood
   
